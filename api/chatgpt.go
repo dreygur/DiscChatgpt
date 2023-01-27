@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 )
@@ -40,7 +41,7 @@ type GPTResponse struct {
 }
 
 // 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
-func RequestToChatGPT(query, apiKey string) (*GPTResponse, error) {
+func RequestToChatGPT(query string) (*GPTResponse, error) {
 	url := "https://api.openai.com/v1/completions"
 
 	gptReqObj := &GPTRequest{
@@ -66,7 +67,7 @@ func RequestToChatGPT(query, apiKey string) (*GPTResponse, error) {
 		return nil, err
 	}
 
-	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", apiKey))
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("CHATGPT_TOKEN")))
 	req.Header.Add("content-type", "application/json")
 
 	res, err := client.Do(req)

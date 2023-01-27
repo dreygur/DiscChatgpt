@@ -8,12 +8,20 @@ import (
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/joho/godotenv"
 )
+
+func init() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+}
 
 // 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
 func main() {
 	// Create a new Discord session using the provided bot token.
-	dg, err := discordgo.New("Bot OTg3MDYwNDQxNzczNjU4MTcz.G5OcuP.2Z4mYV2aCvy_fT_jCyfg75---Qf-IgjsKnnDO4")
+	dg, err := discordgo.New("Bot " + os.Getenv("DISCORD_BOT_TOKEN"))
 	if err != nil {
 		panic(err)
 	}
