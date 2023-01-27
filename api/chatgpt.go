@@ -3,8 +3,6 @@ package api
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -17,15 +15,32 @@ type GPTRequest struct {
 	MaxTokens        int     `json:"max_tokens"`
 	Top              int     `json:"top_p"`
 	FrequencyPenalty int     `json:"frequency_penalty"`
-	PresensePenalty  int     `json:"presense_penalty"`
+	PresencePenalty  int     `json:"presence_penalty"`
 }
 
 type GPTResponse struct {
-	Choices []string `json:"choices"`
+	Id      string `json:"id,omitempty"`
+	Object  string `json:"object,omitempty"`
+	Created int    `json:"created,omitempty"`
+	Model   string `json:"model,omitempty"`
+	Choices []struct {
+		Text         string `json:"text,omitempty"`
+		Index        int    `json:"index,omitempty"`
+		FinishReason string `json:"finish_reason,omitempty"`
+	} `json:"choices,omitempty"`
+	Usages struct {
+		PromptTokens     int `json:"prompt_token,omitempty"`
+		CompletionTokens int `json:"completion_tokens,omitempty"`
+		TotalTokens      int `json:"total_tokens,omitempty"`
+	} `json:"usages,omitempty"`
+	Error struct {
+		Message string `json:"message,omitempty"`
+		Type    string `type:"message,omitempty"`
+	} `json:"error,omitempty"`
 }
 
 // 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
-func RequestToChatGPT(query, apiKey string) (string, error) {
+func RequestToChatGPT(query, apiKey string) (*GPTResponse, error) {
 	url := "https://api.openai.com/v1/completions"
 
 	gptReqObj := &GPTRequest{
@@ -35,12 +50,12 @@ func RequestToChatGPT(query, apiKey string) (string, error) {
 		MaxTokens:        256,
 		Top:              1,
 		FrequencyPenalty: 0,
-		PresensePenalty:  0,
+		PresencePenalty:  0,
 	}
 
 	jsonObj, err := json.Marshal(gptReqObj)
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
 
 	reqObj := strings.NewReader(string(jsonObj))
@@ -48,7 +63,7 @@ func RequestToChatGPT(query, apiKey string) (string, error) {
 	client := &http.Client{Timeout: time.Millisecond * 6000}
 	req, err := http.NewRequest("POST", url, reqObj)
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
 
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", apiKey))
@@ -56,15 +71,15 @@ func RequestToChatGPT(query, apiKey string) (string, error) {
 
 	res, err := client.Do(req)
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
 	defer res.Body.Close()
 
-	body, err := ioutil.ReadAll(res.Body)
+	var response GPTResponse
+	err = json.NewDecoder(res.Body).Decode(&response)
 	if err != nil {
-		log.Println(err)
+		return nil, err
 	}
-	fmt.Println(string(body))
 
-	return "", nil
+	return &response, nil
 }
