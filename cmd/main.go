@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/joho/godotenv"
@@ -25,6 +26,8 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	dg.Client.Timeout = time.Minute * 20
+	dg.MaxRestRetries = 100
 
 	// Register the messageCreate func as a callback for MessageCreate events.
 	dg.AddHandler(messageCreate)

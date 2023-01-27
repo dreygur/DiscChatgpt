@@ -61,7 +61,7 @@ func RequestToChatGPT(query string) (*GPTResponse, error) {
 
 	reqObj := strings.NewReader(string(jsonObj))
 
-	client := &http.Client{Timeout: time.Millisecond * 6000}
+	client := &http.Client{Timeout: time.Minute * 20}
 	req, err := http.NewRequest("POST", url, reqObj)
 	if err != nil {
 		return nil, err

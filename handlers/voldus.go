@@ -27,8 +27,9 @@ func Voldus(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: &discordgo.InteractionResponseData{
-			// Embeds: VoldusMessageHandler(s, i),
-			Content: VoldusMessageHandler(s, i),
+			Content: "Just one moment...",
 		},
 	})
+	s.ChannelMessageSend(i.ChannelID, VoldusMessageHandler(s, i))
+
 }
