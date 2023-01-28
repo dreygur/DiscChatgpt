@@ -26,6 +26,7 @@ func HelpMessageHandler(s *discordgo.Session, i *discordgo.InteractionCreate) []
 	return forAdmin
 }
 
+// Handler for slash command help
 func Help(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,

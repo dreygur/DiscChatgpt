@@ -9,6 +9,7 @@ import (
 	"time"
 )
 
+// Request Object (json) to ChatGPT
 type GPTRequest struct {
 	Model            string  `json:"model"`
 	Prompt           string  `json:"prompt"`
@@ -19,6 +20,7 @@ type GPTRequest struct {
 	PresencePenalty  int     `json:"presence_penalty"`
 }
 
+// ChatGPT Response for davinci model
 type GPTResponse struct {
 	Id      string `json:"id,omitempty"`
 	Object  string `json:"object,omitempty"`
@@ -40,7 +42,7 @@ type GPTResponse struct {
 	} `json:"error,omitempty"`
 }
 
-// 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
+// Request Handler for ChatGPT Requests
 func RequestToChatGPT(query string) (*GPTResponse, error) {
 	url := "https://api.openai.com/v1/completions"
 
