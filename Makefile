@@ -3,6 +3,3 @@ run:
 
 build:
 	go build -o DiscordChatGPT cmd/main.go
-
-all:
-	go build -o DiscordChatGPT
